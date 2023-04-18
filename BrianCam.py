@@ -21,7 +21,11 @@ class SimpleFacerec:
         """
         # Load Images
         images_path = glob.glob(os.path.join(images_path, "*.*"))
-
+       
+        if len(images_path) == 0:
+            print("No images found. Skipping encoding.")
+            return
+            
         print("{} encoding images found.".format(len(images_path)))
 
         # Store image encoding and names
