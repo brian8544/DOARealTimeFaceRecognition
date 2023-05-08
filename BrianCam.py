@@ -3,6 +3,7 @@ import os
 import glob
 import numpy as np
 import face_recognition
+import sys
 
 class SimpleFacerec:
     def __init__(self):
@@ -11,7 +12,7 @@ class SimpleFacerec:
 
         # Resize frame for a faster speed
         # Default: 0.25
-        self.frame_resizing = 0.10
+        self.frame_resizing = 0.25
 
     def load_encoding_images(self, images_path):
         """
@@ -45,8 +46,8 @@ class SimpleFacerec:
             # Store file name and file encoding
             self.known_face_encodings.append(img_encoding)
             self.known_face_names.append(filename)
-
-        print("Encoding images loaded")
+            
+        #print("Encoding images loaded.")
 
     def detect_known_faces(self, frame):
         # Resize the frame for a faster speed
@@ -78,18 +79,20 @@ class SimpleFacerec:
         face_locations = face_locations / self.frame_resizing
 
         return face_locations.astype(int), face_names
-
+    
 # Load and encode faces from defined folder.
 sfr = SimpleFacerec()
 sfr.load_encoding_images("images/")
 
 # Load camera, where the number is the camera id.
-# It's also possible to load an IP-camera like so:
-# cap = cv2.VideoCapture('rtsp://1.1.1.1/mycamera')
-cap = cv2.VideoCapture(0)
+# It's also possible to load an IP-camera:
+# cap = cv2.VideoCapture('rtsp://1.1.1.1:1337/mycamera')
+# cap = cv2.VideoCapture('http://1.1.1.1:1337/mjpg/video.mjpg')
+
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+#cap = cv2.VideoCapture('http://166.130.18.45:1024/mjpg/video.mjpg')
 
 while True:
-
     # Read a frame from the camera.
     ret, frame = cap.read()
 
@@ -99,14 +102,14 @@ while True:
         y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
         cv2.putText(frame, name, (x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
-
+        
     # Display the frame in a window.
     cv2.imshow("Face Recognition", frame)
-
-    # Wait for a key press and check if it's the ESC or Q key.
+    
+    # Wait for a key press to stop process.
     key = cv2.waitKey(1)
     if key == ord('q') or key == ord('Q'):
-        break
+        sys.exit()
 
 # Release the camera and close the window.
 cap.release()
