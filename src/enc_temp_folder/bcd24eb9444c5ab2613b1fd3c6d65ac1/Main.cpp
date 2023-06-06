@@ -18,8 +18,10 @@ void readSettings()
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())
         {
-            std::cout << "settings.conf is empty or corrupt." << std::endl;
+            std::cout << "Warning: settings file is empty." << std::endl;
             settingsFile.close();
+            system("pause");
+            exit;
         }
         std::string line;
         while (std::getline(settingsFile, line))
@@ -41,9 +43,7 @@ void readSettings()
     }
     else
     {
-        std::cout << "Failed to open settings.conf file." << std::endl;
-        system("pause");
-        exit;
+        std::cout << "Failed to open settings file." << std::endl;
     }
 }
 
@@ -117,6 +117,9 @@ int main(int argc, char** argv)
     // Load the face cascade
     cv::CascadeClassifier faceCascade(CASCADE_FILE_MAIN);
 
+    // Load the eye cascade (optional)
+    cv::CascadeClassifier eyeCascade(CASCADE_FILE_EYES);
+
     // Check if the cascades exist and thus be loaded.
     if (!faceCascade.load(CASCADE_FILE_MAIN))
     {
@@ -126,11 +129,7 @@ int main(int argc, char** argv)
         std::system("pause");
         return -1;
     }
-
-    // Load the eye cascade (optional)
-    cv::CascadeClassifier eyeCascade(CASCADE_FILE_EYES);
-
-    if (!eyeCascade.load(CASCADE_FILE_EYES))
+    else if (!eyeCascade.load(CASCADE_FILE_EYES))
     {
         // Eye cascade could not be found
         std::system("cls");
@@ -146,7 +145,7 @@ int main(int argc, char** argv)
     if (!capture.isOpened())
     {
         std::system("cls");
-        std::cout << "Error opening camera." << std::endl;
+        std::cout << "Error opening webcam." << std::endl;
         std::system("pause");
         return -1;
     }
