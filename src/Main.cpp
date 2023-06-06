@@ -26,22 +26,6 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nest
     {
         // Draw a rectangle around the face
         rectangle(img, faces[i], Scalar(255, 0, 0), 2);
-
-        /*
-        // Right now it's very buggy, something takes lots of frames once initiated. Sometimes draws random dots in corners. Probably has to do with sunlight particles.
-        // If a nested cascade has been loaded, then detect eyes within the detected faces
-        if (nestedCascade.empty() == false)
-        {
-            vector<Rect> eyes;
-            nestedCascade.detectMultiScale(gray(faces[i]), eyes, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(10, 10));
-            // Iterate over the detected eyes
-            for (size_t j = 0; j < eyes.size(); j++)
-            {
-                // Draw a circle around each eye
-                circle(img, eyes[j].tl(), 5, Scalar(0, 255, 0), -1);
-            }
-        }
-        */
     }
 }
 
