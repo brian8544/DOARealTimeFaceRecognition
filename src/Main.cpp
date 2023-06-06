@@ -27,7 +27,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
         cv::rectangle(img, faceROI, cv::Scalar(255, 0, 0), 2);
 
         // Compare the face with images in the specified directory
-        std::filesystem::path imageDir("D:/Repositories/RealtimeFacialRecognition/contrib/images");
+        std::filesystem::path imageDir(IMAGE_DIR);
         for (const auto& entry : std::filesystem::directory_iterator(imageDir))
         {
             cv::Mat compareImg = cv::imread(entry.path().string());
@@ -74,13 +74,13 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
 int main(int argc, char** argv)
 {
     // Load the face cascade
-    cv::CascadeClassifier faceCascade(CASCADE_FILE_LOCATION);
+    cv::CascadeClassifier faceCascade(CASCADE_FILE_MAIN);
 
     // Load the eye cascade (optional)
-    cv::CascadeClassifier eyeCascade(EYE_CASCADE_FILE_LOCATION);
+    cv::CascadeClassifier eyeCascade(CASCADE_FILE_EYES);
 
     // Check if the cascades exist and thus be loaded.
-    if (!faceCascade.load(CASCADE_FILE_LOCATION))
+    if (!faceCascade.load(CASCADE_FILE_MAIN))
     {
         // Face cascade could not be found
         std::system("cls");
@@ -88,7 +88,7 @@ int main(int argc, char** argv)
         std::system("pause");
         return -1;
     }
-    else if (!eyeCascade.load(EYE_CASCADE_FILE_LOCATION))
+    else if (!eyeCascade.load(CASCADE_FILE_EYES))
     {
         // Eye cascade could not be found
         std::system("cls");
