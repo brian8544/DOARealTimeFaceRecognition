@@ -23,7 +23,51 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
     for (size_t i = 0; i < faces.size(); i++)
     {
         // Draw a rectangle around the face
-        cv::rectangle(img, faces[i], cv::Scalar(255, 0, 0), 2);
+        cv::Rect faceROI = faces[i];
+        cv::rectangle(img, faceROI, cv::Scalar(255, 0, 0), 2);
+
+        // Compare the face with images in the specified directory
+        std::filesystem::path imageDir("D:/Repositories/RealtimeFacialRecognition/contrib/images");
+        for (const auto& entry : std::filesystem::directory_iterator(imageDir))
+        {
+            cv::Mat compareImg = cv::imread(entry.path().string());
+            if (compareImg.empty())
+            {
+                std::cout << "Failed to read image: " << entry.path().filename().string() << std::endl;
+                continue; // Skip to the next image
+            }
+
+            // Convert the compare image to grayscale
+            cv::cvtColor(compareImg, compareImg, cv::COLOR_BGR2GRAY);
+
+            // Resize the compare image to match the size of the detected face
+            cv::resize(compareImg, compareImg, faceROI.size());
+
+            // Perform template matching to find the best match
+            cv::Mat result;
+            try
+            {
+                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCOEFF_NORMED);
+            }
+            catch (const cv::Exception& e)
+            {
+                std::cout << "Error occurred during template matching: " << e.what() << std::endl;
+                continue; // Skip to the next image
+            }
+
+            // Set a threshold for the match
+            double threshold = 0.1; // 0.8 = default
+            double minVal, maxVal;
+            cv::Point minLoc, maxLoc;
+            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+
+            if (maxVal > threshold)
+            {
+                // If a match is found, draw an orange box with the filename as a label
+                cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
+                cv::putText(img, entry.path().filename().string(), cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
+            }
+        }
     }
 }
 
