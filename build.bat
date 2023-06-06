@@ -7,10 +7,10 @@ set "msbuildPath=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild
 set "solutionPath=D:\Repositories\RealtimeFacialRecognition\RealtimeFacialRecognition.sln"
 set "buildPath=D:\Repositories\RealtimeFacialRecognition\x64"
 
-:: Remove existing build folder if it exists
-::IF EXIST "%buildPath%" (
-::    rmdir /s /q "%buildPath%"
-::)
+::Remove existing build folder if it exists
+IF EXIST "%buildPath%" (
+    rmdir /s /q "%buildPath%"
+)
 
 :: Build the solution using MSBuild
 "%msbuildPath%" "%solutionPath%" /p:Configuration=Debug /m /v:m
@@ -28,6 +28,9 @@ mkdir "%binPath%cascades"
 
 :: Copy files from contrib\cascades to build\cascades
 xcopy /s /y "D:\Repositories\RealtimeFacialRecognition\contrib\cascades\*" "%binPath%cascades\"
+
+:: Copy files from contrib\cascades to build\cascades
+xcopy "D:\Repositories\RealtimeFacialRecognition\src\settings.conf" "%binPath%"
 
 :: Delete unnecessary files from the release folder
 echo --- Some errors may show up, depending on which build mode has been used. Don't worry ---
