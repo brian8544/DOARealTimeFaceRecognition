@@ -7,63 +7,60 @@
 
 #include "Main.h"
 
-using namespace std;
-using namespace cv;
-
 // Function for face detection
-void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale)
+void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClassifier& nestedCascade, double scale)
 {
     // Convert input image to grayscale
-    Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
+    cv::Mat gray;
+    cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
 
     // Detect faces in the grayscale image
-    vector<Rect> faces;
-    cascade.detectMultiScale(gray, faces, 1.1, 2, 0 | CASCADE_SCALE_IMAGE, Size(30, 30));
+    std::vector<cv::Rect> faces;
+    cascade.detectMultiScale(gray, faces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     // Iterate over the detected faces
     for (size_t i = 0; i < faces.size(); i++)
     {
         // Draw a rectangle around the face
-        rectangle(img, faces[i], Scalar(255, 0, 0), 2);
+        cv::rectangle(img, faces[i], cv::Scalar(255, 0, 0), 2);
     }
 }
 
-int main(int argc, const char** argv)
+int main(int argc, char** argv)
 {
     // Load the face cascade
-    CascadeClassifier faceCascade(CASCADE_FILE_LOCATION);
+    cv::CascadeClassifier faceCascade(CASCADE_FILE_LOCATION);
 
     // Load the eye cascade (optional)
-    CascadeClassifier eyeCascade(EYE_CASCADE_FILE_LOCATION);
+    cv::CascadeClassifier eyeCascade(EYE_CASCADE_FILE_LOCATION);
 
     // Check if the cascades exist and thus be loaded.
-    if (!faceCascade.load(CASCADE_FILE_LOCATION)) 
+    if (!faceCascade.load(CASCADE_FILE_LOCATION))
     {
         // Face cascade could not be found
-        system("cls");
+        std::system("cls");
         std::cout << "Could not find the face cascade." << std::endl;
-        system("pause");
+        std::system("pause");
         return -1;
     }
-    else if (!eyeCascade.load(EYE_CASCADE_FILE_LOCATION)) 
+    else if (!eyeCascade.load(EYE_CASCADE_FILE_LOCATION))
     {
         // Eye cascade could not be found
-        system("cls");
+        std::system("cls");
         std::cout << "Could not find the eye cascade." << std::endl;
-        system("pause");
+        std::system("pause");
         return -1;
     }
 
     // Create a VideoCapture object to capture video from webcam
-    VideoCapture capture(0);
+    cv::VideoCapture capture(0);
 
     // If the webcam is not opened, then exit
     if (!capture.isOpened())
     {
-        system("cls");
-        cout << "Error opening webcam." << endl;
-        system("pause");
+        std::system("cls");
+        std::cout << "Error opening webcam." << std::endl;
+        std::system("pause");
         return -1;
     }
 
@@ -71,7 +68,7 @@ int main(int argc, const char** argv)
     for (;;)
     {
         // Capture a frame from the webcam
-        Mat frame;
+        cv::Mat frame;
         capture >> frame;
 
         // If the frame is empty, then break from the loop
@@ -84,10 +81,10 @@ int main(int argc, const char** argv)
         detectAndDraw(frame, faceCascade, eyeCascade, 1.1);
 
         // Display the frame
-        imshow("Face Detection", frame);
+        cv::imshow("Face Detection", frame);
 
         // Wait for the user to press a key
-        int key = waitKey(1);
+        int key = cv::waitKey(1);
 
         // If the user presses ESC, then break from the loop
         if (key == 27)
@@ -104,7 +101,7 @@ int main(int argc, const char** argv)
     capture.release();
 
     // Destroy all windows
-    destroyAllWindows();
+    cv::destroyAllWindows();
 
     return 0;
 }
