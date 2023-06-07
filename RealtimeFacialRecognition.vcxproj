@@ -70,6 +70,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <CopyLocalDeploymentContent>true</CopyLocalDeploymentContent>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -138,13 +150,28 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="contrib\images\.placeholder">
+      <DeploymentContent>true</DeploymentContent>
+	  <Link>/images/.placeholder</Link>
+	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="src\settings.conf">
-      <DeploymentContent>false</DeploymentContent>
+      <Link>settings.conf</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="contrib\cascades\haarcascade_eye_tree_eyeglasses.xml" />
-    <Xml Include="contrib\cascades\haarcascade_frontalface_alt2.xml" />
+    <Xml Include="contrib\cascades\haarcascade_eye_tree_eyeglasses.xml">
+      <Link>/cascades/haarcascade_eye_tree_eyeglasses.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Xml>
+    <Xml Include="contrib\cascades\haarcascade_frontalface_alt2.xml">
+      <Link>/cascades/haarcascade_frontalface_alt2.xml</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DeploymentContent>true</DeploymentContent>
+    </Xml>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
