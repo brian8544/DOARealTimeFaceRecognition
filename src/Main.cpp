@@ -11,6 +11,19 @@ std::string CASCADE_FILE_MAIN;
 std::string CASCADE_FILE_EYES;
 std::string IMAGE_DIR;
 
+// Function to check if a file has a valid image extension
+bool hasValidImageExtension(const std::filesystem::path& path) {
+    std::string extension = path.extension().string();
+    // List of valid image extensions (add more if needed)
+    std::vector<std::string> validExtensions = { ".jpg", ".jpeg", ".png", ".bmp" };
+    for (const std::string& validExtension : validExtensions) {
+        if (extension == validExtension) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void readSettings()
 {
     std::ifstream settingsFile("settings.conf");
@@ -43,7 +56,7 @@ void readSettings()
     {
         std::cout << "Failed to open settings.conf file." << std::endl;
         system("pause");
-        exit;
+        exit(1);  // Use exit(1) to indicate an error
     }
 }
 
@@ -69,6 +82,12 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
         std::filesystem::path imageDir(IMAGE_DIR);
         for (const auto& entry : std::filesystem::directory_iterator(imageDir))
         {
+            // Check if the file has a valid image extension
+            if (!hasValidImageExtension(entry.path()))
+            {
+                continue; // Skip files with invalid extensions
+            }
+
             cv::Mat compareImg = cv::imread(entry.path().string());
             if (compareImg.empty())
             {
