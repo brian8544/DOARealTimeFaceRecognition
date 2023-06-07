@@ -27,11 +27,11 @@ bool hasValidImageExtension(const std::filesystem::path& path) {
 void readSettings()
 {
     // Since running debug mode in Visual Studio loads the executable at the root "/", we have to hardlink the conf file, otherwise it will throw a missing file error.
-    #ifdef _DEBUG
+#ifdef _DEBUG
     std::ifstream settingsFile("src/settings-dev.conf");
-    #else
+#else
     std::ifstream settingsFile("settings.conf");
-    #endif
+#endif
     if (settingsFile.is_open())
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())
@@ -175,6 +175,12 @@ int main(int argc, char** argv)
         return -1;
     }
 
+    // Create the named window
+    cv::namedWindow("Face Detection", cv::WINDOW_NORMAL);
+
+    // Set initial size for the window
+    cv::resizeWindow("Face Detection", 300, 300);
+
     // Loop until the user presses ESC
     for (;;)
     {
@@ -211,8 +217,8 @@ int main(int argc, char** argv)
     // Close the VideoCapture object
     capture.release();
 
-    // Destroy all windows
-    cv::destroyAllWindows();
+    // Destroy the window
+    cv::destroyWindow("Face Detection");
 
     return 0;
 }
