@@ -13,7 +13,7 @@ std::string IMAGE_DIR;
 
 void readSettings()
 {
-    std::ifstream settingsFile("D:/Repositories/RealtimeFacialRecognition/settings.conf");
+    std::ifstream settingsFile("settings.conf");
     if (settingsFile.is_open())
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())
