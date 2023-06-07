@@ -16,7 +16,7 @@ bool hasValidImageExtension(const std::filesystem::path& path) {
     std::string extension = path.extension().string();
     // List of valid image extensions (add more if needed)
     std::vector<std::string> validExtensions = { ".jpg", ".jpeg", ".png", ".bmp" };
-    for (const std::string& validExtension : validExtensions) {
+    for (const auto& validExtension : validExtensions) {
         if (extension == validExtension) {
             return true;
         }
