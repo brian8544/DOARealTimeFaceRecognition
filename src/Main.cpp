@@ -26,7 +26,12 @@ bool hasValidImageExtension(const std::filesystem::path& path) {
 
 void readSettings()
 {
+    // Since running debug mode in Visual Studio loads the executable at the root "/", we have to hardlink the conf file, otherwise it will throw a missing file error.
+    #ifdef _DEBUG
+    std::ifstream settingsFile("src/settings-dev.conf");
+    #else
     std::ifstream settingsFile("settings.conf");
+    #endif
     if (settingsFile.is_open())
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())

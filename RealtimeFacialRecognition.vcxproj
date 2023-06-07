@@ -152,9 +152,10 @@
   <ItemGroup>
     <None Include="contrib\images\.placeholder">
       <DeploymentContent>true</DeploymentContent>
-	  <Link>/images/.placeholder</Link>
-	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>/images/.placeholder</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="src\settings-dev.conf" />
     <None Include="src\settings.conf">
       <Link>settings.conf</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
