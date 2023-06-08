@@ -1,0 +1,25 @@
+image: Visual Studio 2022
+
+cache:
+  - '%USERPROFILE%\AppData\Local\vcpkg'
+
+environment:
+  matrix:
+    - VCPKG_PLATFORM: x64-windows
+    - VCPKG_FEATURE_FLAGS: "manifests"
+
+install:
+  - ps: |
+      git clone https://github.com/microsoft/vcpkg.git
+      cd vcpkg
+      bootstrap-vcpkg.bat
+      vcpkg integrate install
+      vcpkg install opencv4
+      cd ..
+
+build_script:
+  - msbuild RealtimeFacialRecognition.sln /p:Configuration=Release /p:PlatformToolset=v143
+
+artifacts:
+  - path: RealtimeFacialRecognition/bin/Release
+    name: RealtimeFacialRecognition
