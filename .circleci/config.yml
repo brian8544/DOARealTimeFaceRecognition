@@ -2,7 +2,7 @@ version: 2.1
 
 executors:
   windows-executor:
-    windows: true
+    executor: windows/1809
 
 jobs:
   build:
