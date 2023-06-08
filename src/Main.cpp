@@ -8,7 +8,6 @@
 #include <opencv2/imgproc.hpp>
 
 std::string CASCADE_FILE_MAIN;
-std::string CASCADE_FILE_EYES;
 std::string IMAGE_DIR;
 
 // Function to check if a file has a valid image extension
@@ -46,10 +45,6 @@ void readSettings()
             {
                 CASCADE_FILE_MAIN = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
             }
-            else if (line.find("CASCADE_FILE_EYES") != std::string::npos)
-            {
-                CASCADE_FILE_EYES = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
-            }
             else if (line.find("IMAGE_DIR") != std::string::npos)
             {
                 IMAGE_DIR = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
@@ -66,7 +61,8 @@ void readSettings()
 }
 
 // Function for face detection
-void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClassifier& nestedCascade, double scale)
+//void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClassifier& nestedCascade, double scale)
+void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 {
     // Convert input image to grayscale
     cv::Mat gray;
@@ -208,18 +204,6 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    // Load the eye cascade (optional)
-    cv::CascadeClassifier eyeCascade(CASCADE_FILE_EYES);
-
-    if (!eyeCascade.load(CASCADE_FILE_EYES))
-    {
-        // Eye cascade could not be found
-        std::system("cls");
-        std::cout << "Could not find the eye cascade." << std::endl;
-        std::system("pause");
-        return -1;
-    }
-
     // Create a VideoCapture object to capture video from webcam
     cv::VideoCapture capture(0);
 
@@ -252,7 +236,7 @@ int main(int argc, char** argv)
         }
 
         // Detect faces in the frame
-        detectAndDraw(frame, faceCascade, eyeCascade, 1.1);
+        detectAndDraw(frame, faceCascade, 1.1);
 
         // Display the frame
         cv::imshow("Face Detection", frame);
