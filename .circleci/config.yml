@@ -1,0 +1,23 @@
+version: 2.1
+
+executors:
+  windows-executor:
+    windows: true
+
+jobs:
+  build:
+    executor: windows-executor
+    steps:
+      - setup-vcpkg
+      - run:
+          name: Install OpenCV4 with Vcpkg
+          command: |
+            vcpkg install opencv4 --triplet x64-windows
+            vcpkg integrate install
+      - run:
+          name: Configure Visual Studio C++ environment
+          command: |
+            call "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
+      - run:
+          name: Build and test project
+          command: msbuild RealtimeFacialRecognition.sln /p:Configuration=Release /m /v:m
