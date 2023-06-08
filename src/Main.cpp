@@ -131,9 +131,9 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 
             // Set a threshold for the match
             double threshold = 0.1; // 0.8 = default
-            double minVal;
-            cv::Point minLoc;
-            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);
+            double minVal;                                      //  double maxVal;
+            cv::Point minLoc;                                   //  cv::Point maxLoc;
+            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);   //  cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
 
             if (maxVal > threshold)
             {
