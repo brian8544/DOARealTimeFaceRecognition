@@ -4,7 +4,7 @@ cls
 setlocal enabledelayedexpansion
 
 set "msbuildPath=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
-set "solutionPath=D:\Repositories\RealtimeFacialRecognition\RealtimeFacialRecognition.sln"
+set "solutionPath=D:\Repositories\RealTimeFaceRecognition-PRIVATE\RealtimeFacialRecognition.sln"
 set "buildPath=D:\Repositories\RealtimeFacialRecognition\x64"
 
 ::Remove existing build folder if it exists

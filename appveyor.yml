@@ -14,7 +14,7 @@ install:
       cd vcpkg
       bootstrap-vcpkg.bat
       vcpkg integrate install
-      vcpkg install opencv4
+      vcpkg install opencv4:x64-windows
       cd ..
 
 build_script:
