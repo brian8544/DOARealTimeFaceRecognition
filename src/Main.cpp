@@ -138,7 +138,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             }
 
             // Set a threshold for the match
-            double threshold = 0.8; // 0.8 = default
+            double threshold = 0.1; // 0.8 = default
             double minVal;                                      //  double maxVal;
             cv::Point minLoc;                                   //  cv::Point maxLoc;
             cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);   //  cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
@@ -148,6 +148,12 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
                 // If a better match is found, update the best match information
                 bestMatchName = entry.path().filename().string();
             }
+            else if (maxVal > 0.1 && entry.path().filename().string() != bestMatchName)
+            {
+                printCurrentTime();
+                // Print other matches to the console
+                std::cout << "Other match: " << entry.path().filename().string() << std::endl;
+            }
         }
 
         if (!bestMatchName.empty())
@@ -155,56 +161,6 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             // If a match is found, draw an orange box with the best match filename as a label
             cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
             cv::putText(img, bestMatchName, cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
-        }
-
-        // Write other matches to the console
-        for (const auto& entry : std::filesystem::directory_iterator(imageDir))
-        {
-            // Check if the file has a valid image extension
-            if (!hasValidImageExtension(entry.path()))
-            {
-                continue; // Skip files with invalid extensions
-            }
-
-            cv::Mat compareImg = cv::imread(entry.path().string());
-            if (compareImg.empty())
-            {
-                printCurrentTime();
-                std::cout << "Failed to read image: " << entry.path().filename().string() << std::endl;
-                continue; // Skip to the next image
-            }
-
-            // Convert the compare image to grayscale
-            cv::cvtColor(compareImg, compareImg, cv::COLOR_BGR2GRAY);
-
-            // Resize the compare image to match the size of the detected face
-            cv::resize(compareImg, compareImg, faceROI.size());
-
-            // Perform template matching to find the match
-            cv::Mat result;
-            try
-            {
-                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCOEFF_NORMED);
-            }
-            catch (const cv::Exception& e)
-            {
-                printCurrentTime();
-                std::cout << "Error occurred during template matching: " << e.what() << std::endl;
-                continue; // Skip to the next image
-            }
-
-            // Set a threshold for the match
-            double threshold = 0.8; // 0.8 = default
-            double maxVal;
-            cv::Point maxLoc;
-            cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
-
-            if (maxVal > threshold && entry.path().filename().string() != bestMatchName)
-            {
-                printCurrentTime();
-                // Print other matches to the console
-                std::cout << "Other match: " << entry.path().filename().string() << std::endl;
-            }
         }
     }
 }
