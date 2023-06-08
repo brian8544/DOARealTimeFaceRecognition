@@ -225,12 +225,8 @@ int main(int argc, char** argv)
         // Wait for the user to press a key
         int key = cv::waitKey(1);
 
-        // If the user presses ESC, then break from the loop
-        if (key == 27)
-        {
-            break;
-        }
-        else if (key == 'q')
+        // If the user presses Q, then break from the loop
+        if (key == 27 ||  key == 'q' || key == 'Q')
         {
             break;
         }
