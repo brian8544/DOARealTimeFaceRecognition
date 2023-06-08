@@ -11,7 +11,6 @@
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
 
-// Function to print the current time
 // Function to print the current time inline with std::cout
 void printCurrentTime()
 {
@@ -22,7 +21,6 @@ void printCurrentTime()
     strftime(buffer, sizeof(buffer), "[%d/%m/%Y %H:%M]", &timeInfo);
     std::cout << buffer << " ";
 }
-
 
 // Function to check if a file has a valid image extension
 bool hasValidImageExtension(const std::filesystem::path& path) {
