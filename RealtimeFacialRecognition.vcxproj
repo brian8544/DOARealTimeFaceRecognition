@@ -169,12 +169,6 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <none Include="contrib\testing\group.mp4" />
-	  <DeploymentContent>true</DeploymentContent>
-      <Link>/testing/group.mp4</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
