@@ -62,6 +62,10 @@ void readSettings()
             {
                 IMAGE_DIR = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
             }
+            else if (line.find("LOGGING_DIR") != std::string::npos)
+            {
+                IMAGE_DIR = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
+            }
         }
         settingsFile.close();
     }
