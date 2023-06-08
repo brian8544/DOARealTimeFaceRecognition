@@ -156,7 +156,7 @@
       <DeploymentContent>true</DeploymentContent>
       <Link>/testing/group.mp4</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>	
+    </None>
     <None Include="src\settings-dev.conf" />
     <None Include="src\settings.conf">
       <Link>settings.conf</Link>
