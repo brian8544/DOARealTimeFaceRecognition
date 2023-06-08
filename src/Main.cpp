@@ -85,6 +85,10 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
 
         // Compare the face with images in the specified directory
         std::filesystem::path imageDir(IMAGE_DIR);
+
+        double maxVal = 0.0;  // Store the maximum match value
+        std::string bestMatchName;  // Store the name of the best match
+
         for (const auto& entry : std::filesystem::directory_iterator(imageDir))
         {
             // Check if the file has a valid image extension
@@ -106,7 +110,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
             // Resize the compare image to match the size of the detected face
             cv::resize(compareImg, compareImg, faceROI.size());
 
-            // Perform template matching to find the best match
+            // Perform template matching to find the match
             cv::Mat result;
             try
             {
@@ -120,15 +124,68 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClas
 
             // Set a threshold for the match
             double threshold = 0.1; // 0.8 = default
-            double minVal, maxVal;
-            cv::Point minLoc, maxLoc;
-            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
+            double minVal;
+            cv::Point minLoc;
+            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);
 
             if (maxVal > threshold)
             {
-                // If a match is found, draw an orange box with the filename as a label
-                cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
-                cv::putText(img, entry.path().filename().string(), cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
+                // If a better match is found, update the best match information
+                bestMatchName = entry.path().filename().string();
+            }
+        }
+
+        if (!bestMatchName.empty())
+        {
+            // If a match is found, draw an orange box with the best match filename as a label
+            cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
+            cv::putText(img, bestMatchName, cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
+        }
+
+        // Write other matches to the console
+        for (const auto& entry : std::filesystem::directory_iterator(imageDir))
+        {
+            // Check if the file has a valid image extension
+            if (!hasValidImageExtension(entry.path()))
+            {
+                continue; // Skip files with invalid extensions
+            }
+
+            cv::Mat compareImg = cv::imread(entry.path().string());
+            if (compareImg.empty())
+            {
+                std::cout << "Failed to read image: " << entry.path().filename().string() << std::endl;
+                continue; // Skip to the next image
+            }
+
+            // Convert the compare image to grayscale
+            cv::cvtColor(compareImg, compareImg, cv::COLOR_BGR2GRAY);
+
+            // Resize the compare image to match the size of the detected face
+            cv::resize(compareImg, compareImg, faceROI.size());
+
+            // Perform template matching to find the match
+            cv::Mat result;
+            try
+            {
+                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCOEFF_NORMED);
+            }
+            catch (const cv::Exception& e)
+            {
+                std::cout << "Error occurred during template matching: " << e.what() << std::endl;
+                continue; // Skip to the next image
+            }
+
+            // Set a threshold for the match
+            double threshold = 0.1; // 0.8 = default
+            double maxVal;
+            cv::Point maxLoc;
+            cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
+
+            if (maxVal > threshold && entry.path().filename().string() != bestMatchName)
+            {
+                // Print other matches to the console
+                std::cout << "Other match: " << entry.path().filename().string() << std::endl;
             }
         }
     }
