@@ -1,6 +1,7 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <ctime>
 
 // OpenCV 4
 #include <opencv2/objdetect.hpp>
@@ -9,6 +10,19 @@
 
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
+
+// Function to print the current time
+// Function to print the current time inline with std::cout
+void printCurrentTime()
+{
+    time_t now = time(0);
+    struct tm timeInfo;
+    localtime_s(&timeInfo, &now);
+    char buffer[80];
+    strftime(buffer, sizeof(buffer), "[%d/%m/%Y %H:%M]", &timeInfo);
+    std::cout << buffer << " ";
+}
+
 
 // Function to check if a file has a valid image extension
 bool hasValidImageExtension(const std::filesystem::path& path) {
