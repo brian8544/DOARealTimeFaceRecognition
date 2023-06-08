@@ -163,11 +163,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="contrib\cascades\haarcascade_eye_tree_eyeglasses.xml">
-      <Link>/cascades/haarcascade_eye_tree_eyeglasses.xml</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <DeploymentContent>true</DeploymentContent>
-    </Xml>
     <Xml Include="contrib\cascades\haarcascade_frontalface_alt2.xml">
       <Link>/cascades/haarcascade_frontalface_alt2.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
