@@ -10,6 +10,7 @@
 
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
+std::string LOGGING_DIR;
 
 // Function to print the current time inline with std::cout
 void printCurrentTime()
@@ -64,7 +65,7 @@ void readSettings()
             }
             else if (line.find("LOGGING_DIR") != std::string::npos)
             {
-                IMAGE_DIR = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
+                LOGGING_DIR = line.substr(line.find_first_of('"') + 1, line.find_last_of('"') - line.find_first_of('"') - 1);
             }
         }
         settingsFile.close();
@@ -138,7 +139,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             }
 
             // Set a threshold for the match
-            double threshold = 0.1; // 0.8 = default
+            double threshold = 0.2;                             // 0.8 = default
             double minVal;                                      //  double maxVal;
             cv::Point minLoc;                                   //  cv::Point maxLoc;
             cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);   //  cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
