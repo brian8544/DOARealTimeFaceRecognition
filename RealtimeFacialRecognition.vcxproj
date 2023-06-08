@@ -167,7 +167,7 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\FileName.cpp" />
+    <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
