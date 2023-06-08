@@ -152,6 +152,11 @@
       <Link>/images/.placeholder</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="contrib\testing\group.mp4">
+      <DeploymentContent>true</DeploymentContent>
+      <Link>/testing/group.mp4</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>	
     <None Include="src\settings-dev.conf" />
     <None Include="src\settings.conf">
       <Link>settings.conf</Link>
