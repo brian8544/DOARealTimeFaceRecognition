@@ -61,7 +61,6 @@ void readSettings()
 }
 
 // Function for face detection
-//void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, cv::CascadeClassifier& nestedCascade, double scale)
 void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 {
     // Convert input image to grayscale
