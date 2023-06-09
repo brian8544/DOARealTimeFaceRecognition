@@ -15,22 +15,19 @@ std::string IMAGE_DIR;
 std::string LOGGING_DIR;
 
 void Initialize() {
-    if (std::filesystem::is_directory(LOGGING_DIR))
-    {
+
+    if (std::filesystem::is_directory(LOGGING_DIR)) {
         Messages::Info("Logging directory exists. Continuing.");
     }
-    else
-    {
+    else {
         std::filesystem::create_directory(LOGGING_DIR);
         Messages::Notice("Logging directory does not exist. It has been created. First launch?");
     }
 
-    if (std::filesystem::is_directory(IMAGE_DIR))
-    {
+    if (std::filesystem::is_directory(IMAGE_DIR)) {
         Messages::Info("Image directory exists. Continuing.");
     }
-    else
-    {
+    else {
         std::filesystem::create_directory(IMAGE_DIR);
         Messages::Notice("Image directory does not exist. It has been created. First launch?");
     }
@@ -145,6 +142,8 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         // Draw a rectangle around the face
         cv::Rect faceROI = faces[i];
         cv::rectangle(img, faceROI, cv::Scalar(255, 0, 0), 2);
+        Messages::Info("Face recognized, but no match.");
+        logWrite("Face recognized, but no match.");
 
         // Compare the face with images in the specified directory
         std::filesystem::path imageDir(IMAGE_DIR);
@@ -210,6 +209,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         {
             // If a match is found, draw an orange box with the best match filename as a label
             cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
+            Messages::Info("Match found. See window.");
             cv::putText(img, bestMatchName, cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
         }
     }
