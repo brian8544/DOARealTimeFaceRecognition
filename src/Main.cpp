@@ -79,6 +79,18 @@ void readSettings()
     }
 }
 
+void log(const std::string& message) {
+    std::ofstream logFile(LOGGING_DIR + "system.log", std::ios::app);
+    if (logFile.is_open()) {
+        logFile << message << std::endl;
+        logFile.close();
+        std::cout << "Message logged successfully." << std::endl;
+    }
+    else {
+        std::cerr << "Unable to open log file." << std::endl;
+    }
+}
+
 // Function for face detection
 void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 {
@@ -154,6 +166,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
                 printCurrentTime();
                 // Print other matches to the console
                 std::cout << "Other match: " << entry.path().filename().string() << std::endl;
+                log("Hello World");
             }
         }
 
