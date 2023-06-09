@@ -3,6 +3,8 @@
 #include <fstream>
 #include <ctime>
 
+#include "Console/ConsoleOutput.cpp"
+
 // OpenCV 4
 #include <opencv2/objdetect.hpp>
 #include <opencv2/highgui.hpp>
@@ -11,17 +13,6 @@
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
 std::string LOGGING_DIR;
-
-// Function to print the current time inline with std::cout
-void printCurrentTime()
-{
-    time_t now = time(0);
-    struct tm timeInfo;
-    localtime_s(&timeInfo, &now);
-    char buffer[80];
-    strftime(buffer, sizeof(buffer), "[%d/%m/%Y %H:%M]", &timeInfo);
-    std::cout << buffer << " ";
-}
 
 // Function to check if a file has a valid image extension
 bool hasValidImageExtension(const std::filesystem::path& path) {
@@ -48,8 +39,7 @@ void readSettings()
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())
         {
-            printCurrentTime();
-            std::cout << "settings.conf is empty or corrupt." << std::endl;
+            Messages::Info("settings.conf is empty or corrupt.");
             settingsFile.close();
         }
         std::string line;
@@ -72,8 +62,7 @@ void readSettings()
     }
     else
     {
-        printCurrentTime();
-        std::cout << "Failed to open settings.conf file." << std::endl;
+        Messages::Info("Failed to open settings.conf file.");
         system("pause");
         exit(1);  // Use exit(1) to indicate an error
     }
@@ -136,8 +125,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             cv::Mat compareImg = cv::imread(entry.path().string());
             if (compareImg.empty())
             {
-                printCurrentTime();
-                std::cout << "Failed to read image: " << entry.path().filename().string() << std::endl;
+                Messages::Error("Failed to read image: " + entry.path().filename().string());
                 continue; // Skip to the next image
             }
 
@@ -155,8 +143,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             }
             catch (const cv::Exception& e)
             {
-                printCurrentTime();
-                std::cout << "Error occurred during template matching: " << e.what() << std::endl;
+                Messages::Error("Error occurred during template matching: " + std::string(e.what()));
                 continue; // Skip to the next image
             }
 
@@ -173,9 +160,8 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             }
             else if (maxVal > 0.1 && entry.path().filename().string() != bestMatchName)
             {
-                printCurrentTime();
                 // Print other matches to the console
-                std::cout << "Other match: " << entry.path().filename().string() << std::endl;
+                Messages::Info("Other match:  " + entry.path().filename().string());
                 log("Hello World");
             }
         }
@@ -201,8 +187,7 @@ int main(int argc, char** argv)
     {
         // Face cascade could not be found
         std::system("cls");
-        printCurrentTime();
-        std::cout << "Could not find the face cascade." << std::endl;
+        Messages::Error("Could not find the face cascade.");
         std::system("pause");
         return -1;
     }
@@ -214,8 +199,7 @@ int main(int argc, char** argv)
     if (!capture.isOpened())
     {
         std::system("cls");
-        printCurrentTime();
-        std::cout << "Error opening camera." << std::endl;
+        Messages::Error("Error opening camera.");
         std::system("pause");
         return -1;
     }
