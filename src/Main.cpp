@@ -79,12 +79,22 @@ void readSettings()
     }
 }
 
+std::string getCurrentTime() {
+    time_t now = time(0);
+    struct tm timeInfo;
+    localtime_s(&timeInfo, &now);
+    char buffer[80];
+    strftime(buffer, sizeof(buffer), "[%d/%m/%Y %H:%M]", &timeInfo);
+    return buffer;
+}
+
 void log(const std::string& message) {
-    std::ofstream logFile(LOGGING_DIR + "system.log", std::ios::app);
+    std::ofstream logFile(LOGGING_DIR + "/system.log", std::ios::app);
     if (logFile.is_open()) {
+        logFile << getCurrentTime() << " "; // Add current time before the log message
         logFile << message << std::endl;
         logFile.close();
-        std::cout << "Message logged successfully." << std::endl;
+        //std::cout << "Message logged successfully." << std::endl;
     }
     else {
         std::cerr << "Unable to open log file." << std::endl;
