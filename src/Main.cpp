@@ -41,6 +41,8 @@ void readSettings()
         {
             Messages::Info("settings.conf is empty or corrupt.");
             settingsFile.close();
+            system("pause");
+            exit(1);  // Use exit(1) to indicate an error
         }
         std::string line;
         while (std::getline(settingsFile, line))
@@ -77,7 +79,7 @@ std::string getCurrentTime() {
     return buffer;
 }
 
-void log(const std::string& message) {
+void logWrite(const std::string& message) {
     std::ofstream logFile(LOGGING_DIR + "/system.log", std::ios::app);
     if (logFile.is_open()) {
         logFile << getCurrentTime() << " "; // Add current time before the log message
@@ -87,6 +89,8 @@ void log(const std::string& message) {
     }
     else {
         Messages::Error("Unable to open log file.");
+        system("pause");
+        exit(1);  // Use exit(1) to indicate an error
     }
 }
 
@@ -126,6 +130,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             if (compareImg.empty())
             {
                 Messages::Error("Failed to read image: " + entry.path().filename().string());
+                logWrite("Failed to read image: " + entry.path().filename().string());
                 continue; // Skip to the next image
             }
 
@@ -144,6 +149,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             catch (const cv::Exception& e)
             {
                 Messages::Error("Error occurred during template matching: " + std::string(e.what()));
+                logWrite("Error occurred during template matching: " + std::string(e.what()));
                 continue; // Skip to the next image
             }
 
@@ -162,7 +168,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             {
                 // Print other matches to the console
                 Messages::Info("Other match:  " + entry.path().filename().string());
-                log("Hello World");
+                logWrite("Other match:  " + entry.path().filename().string());
             }
         }
 
@@ -188,6 +194,7 @@ int main(int argc, char** argv)
         // Face cascade could not be found
         std::system("cls");
         Messages::Error("Could not find the face cascade.");
+        logWrite("Could not find the face cascade.");
         std::system("pause");
         return -1;
     }
@@ -200,6 +207,7 @@ int main(int argc, char** argv)
     {
         std::system("cls");
         Messages::Error("Error opening camera.");
+        logWrite("Error opening camera.");
         std::system("pause");
         return -1;
     }
@@ -235,7 +243,13 @@ int main(int argc, char** argv)
         // If the user presses Q, then break from the loop
         if (key == 27 ||  key == 'q' || key == 'Q')
         {
-            break;
+            //break;
+            Messages::Info("User has shutdown the application.");
+            logWrite("User has shutdown the application.");
+            capture.release();
+            cv::destroyWindow("Face Detection");
+            system("pause");
+            return 0;
         }
     }
 
