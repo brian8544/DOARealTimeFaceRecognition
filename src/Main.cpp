@@ -14,6 +14,40 @@ std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
 std::string LOGGING_DIR;
 
+void Initialize() {
+    if (std::filesystem::is_directory(LOGGING_DIR))
+    {
+        Messages::Info("Logging directory exists. Continuing.");
+    }
+    else
+    {
+        std::filesystem::create_directory(LOGGING_DIR);
+        Messages::Notice("Logging directory does not exist. It has been created. First launch?");
+    }
+
+    if (std::filesystem::is_directory(IMAGE_DIR))
+    {
+        Messages::Info("Image directory exists. Continuing.");
+    }
+    else
+    {
+        std::filesystem::create_directory(IMAGE_DIR);
+        Messages::Notice("Image directory does not exist. It has been created. First launch?");
+    }
+
+    if (!std::filesystem::exists(LOGGING_DIR + "/system.log")) {
+        std::ofstream logFile(LOGGING_DIR + "/system.log");
+        if (!logFile) {
+            Messages::Error("Log file could not be created. Check file permissions?");
+        }
+        logFile.close();
+        Messages::Notice("Log file created successfully. First launch?");
+    }
+    else {
+        Messages::Info("Log file exists, appending.");
+    }
+}
+
 // Function to check if a file has a valid image extension
 bool hasValidImageExtension(const std::filesystem::path& path) {
     std::string extension = path.extension().string();
@@ -184,6 +218,8 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 int main(int argc, char** argv)
 {
     readSettings();
+
+    Initialize();
 
     // Load the face cascade
     cv::CascadeClassifier faceCascade(CASCADE_FILE_MAIN);

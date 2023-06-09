@@ -24,7 +24,7 @@ echo binPath is set to: %binPath%
 
 :: Delete unnecessary files from the release folder.
 echo --- Some errors may show up, depending on which build mode has been used. Don't worry ---
-::del /s /q "%binPath%*.log"
+del /s /q "%binPath%*.log"
 del /s /q "%binPath%*.pdb"
 del /s /q "%binPath%*.obj"
 del /s /q "%binPath%*.idb"

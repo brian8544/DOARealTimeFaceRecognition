@@ -147,11 +147,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="contrib\images\.placeholder">
-      <DeploymentContent>true</DeploymentContent>
-      <Link>/images/.placeholder</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Text Include="contrib\testing\group.mp4">
       <DeploymentContent>true</DeploymentContent>
       <Link>/testing/group.mp4</Link>
@@ -163,11 +158,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DeploymentContent>true</DeploymentContent>
     </Text>
-	<Text Include="contrib\logs\system.log">
-      <Link>/logs/system.log</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	  <DeploymentContent>true</DeploymentContent>
-	</Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="contrib\cascades\haarcascade_frontalface_alt2.xml">
