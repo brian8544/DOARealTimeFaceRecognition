@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{53afeaad-78c7-4964-bad7-92a6300a6d40}</ProjectGuid>
-    <RootNamespace>RealtimeFacialRecognition</RootNamespace>
+    <RootNamespace>RealTimeFacialRecognition</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
