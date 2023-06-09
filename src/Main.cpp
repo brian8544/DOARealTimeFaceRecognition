@@ -86,7 +86,7 @@ void log(const std::string& message) {
         //std::cout << "Message logged successfully." << std::endl;
     }
     else {
-        std::cerr << "Unable to open log file." << std::endl;
+        Messages::Error("Unable to open log file.");
     }
 }
 
