@@ -152,17 +152,22 @@
       <Link>/images/.placeholder</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="contrib\testing\group.mp4">
+    <Text Include="contrib\testing\group.mp4">
       <DeploymentContent>true</DeploymentContent>
       <Link>/testing/group.mp4</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Text>
     <None Include="src\settings-dev.conf" />
-    <None Include="src\settings.conf">
+    <Text Include="src\settings.conf">
       <Link>settings.conf</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DeploymentContent>true</DeploymentContent>
-    </None>
+    </Text>
+	<Text Include="contrib\logs\system.log">
+      <Link>/logs/system.log</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  <DeploymentContent>true</DeploymentContent>
+	</Text>
   </ItemGroup>
   <ItemGroup>
     <Xml Include="contrib\cascades\haarcascade_frontalface_alt2.xml">
