@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <ctime>
+#include <thread>
 
 // OpenCV 4
 #include <opencv2/objdetect.hpp>
@@ -69,8 +70,7 @@ bool hasValidImageExtension(const std::filesystem::path& path) {
     return false;
 }
 
-void readSettings()
-{
+void readSettings() {
     // Since running debug mode in Visual Studio loads the executable at the root "/", we have to hardlink the conf file, otherwise it will throw a missing file error.
 #ifdef _DEBUG
     std::ifstream settingsFile("src/settings-dev.conf");
