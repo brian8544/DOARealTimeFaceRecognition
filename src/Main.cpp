@@ -17,31 +17,31 @@ std::string LOGGING_DIR;
 void Initialize() {
 
     if (std::filesystem::is_directory(LOGGING_DIR)) {
-        Messages::Info("Logging directory exists. Continuing.");
+        Messages::Info("Logging directory exists. Continuing.\n");
     }
     else {
         std::filesystem::create_directory(LOGGING_DIR);
-        Messages::Notice("Logging directory does not exist. It has been created. First launch?");
+        Messages::Notice("Logging directory does not exist. It has been created. First launch?\n");
     }
 
     if (std::filesystem::is_directory(IMAGE_DIR)) {
-        Messages::Info("Image directory exists. Continuing.");
+        Messages::Info("Image directory exists. Continuing.\n");
     }
     else {
         std::filesystem::create_directory(IMAGE_DIR);
-        Messages::Notice("Image directory does not exist. It has been created. First launch?");
+        Messages::Notice("Image directory does not exist. It has been created. First launch?\n");
     }
 
     if (!std::filesystem::exists(LOGGING_DIR + "/system.log")) {
         std::ofstream logFile(LOGGING_DIR + "/system.log");
         if (!logFile) {
-            Messages::Error("Log file could not be created. Check file permissions?");
+            Messages::Error("Log file could not be created. Check file permissions?\n");
         }
         logFile.close();
-        Messages::Notice("Log file created successfully. First launch?");
+        Messages::Notice("Log file created successfully. First launch?\n");
     }
     else {
-        Messages::Info("Log file exists, appending.");
+        Messages::Info("Log file exists, appending.\n");
     }
 }
 
@@ -70,7 +70,7 @@ void readSettings()
     {
         if (settingsFile.peek() == std::ifstream::traits_type::eof())
         {
-            Messages::Info("settings.conf is empty or corrupt.");
+            Messages::Info("settings.conf is empty or corrupt.\n");
             settingsFile.close();
             system("pause");
             exit(1);  // Use exit(1) to indicate an error
@@ -95,7 +95,7 @@ void readSettings()
     }
     else
     {
-        Messages::Info("Failed to open settings.conf file.");
+        Messages::Info("Failed to open settings.conf file.\n");
         system("pause");
         exit(1);  // Use exit(1) to indicate an error
     }
@@ -119,7 +119,7 @@ void logWrite(const std::string& message) {
         //std::cout << "Message logged successfully." << std::endl;
     }
     else {
-        Messages::Error("Unable to open log file.");
+        Messages::Error("Unable to open log file.\n");
         system("pause");
         exit(1);  // Use exit(1) to indicate an error
     }
@@ -142,7 +142,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         // Draw a rectangle around the face
         cv::Rect faceROI = faces[i];
         cv::rectangle(img, faceROI, cv::Scalar(255, 0, 0), 2);
-        Messages::Info("Face recognized, but no match.");
+        Messages::Info("Face recognized, but no match.\n");
         logWrite("Face recognized, but no match.");
 
         // Compare the face with images in the specified directory
@@ -162,7 +162,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             cv::Mat compareImg = cv::imread(entry.path().string());
             if (compareImg.empty())
             {
-                Messages::Error("Failed to read image: " + entry.path().filename().string());
+                Messages::Error("Failed to read image: " + entry.path().filename().string() + "\n");
                 logWrite("Failed to read image: " + entry.path().filename().string());
                 continue; // Skip to the next image
             }
@@ -181,7 +181,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             }
             catch (const cv::Exception& e)
             {
-                Messages::Error("Error occurred during template matching: " + std::string(e.what()));
+                Messages::Error("Error occurred during template matching: " + std::string(e.what()) + "\n");
                 logWrite("Error occurred during template matching: " + std::string(e.what()));
                 continue; // Skip to the next image
             }
@@ -200,7 +200,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             else if (maxVal > 0.1 && entry.path().filename().string() != bestMatchName)
             {
                 // Print other matches to the console
-                Messages::Info("Other match:  " + entry.path().filename().string());
+                Messages::Info("Other match:  " + entry.path().filename().string() + "\n");
                 logWrite("Other match:  " + entry.path().filename().string());
             }
         }
@@ -209,7 +209,7 @@ void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         {
             // If a match is found, draw an orange box with the best match filename as a label
             cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
-            Messages::Info("Match found. See window.");
+            Messages::Info("Match found. See window.\n");
             cv::putText(img, bestMatchName, cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
         }
     }
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
     {
         // Face cascade could not be found
         std::system("cls");
-        Messages::Error("Could not find the face cascade.");
+        Messages::Error("Could not find the face cascade.\n");
         logWrite("Could not find the face cascade.");
         std::system("pause");
         return -1;
@@ -242,7 +242,7 @@ int main(int argc, char** argv)
     if (!capture.isOpened())
     {
         std::system("cls");
-        Messages::Error("Error opening camera.");
+        Messages::Error("Error opening camera.\n");
         logWrite("Error opening camera.");
         std::system("pause");
         return -1;
@@ -280,7 +280,7 @@ int main(int argc, char** argv)
         if (key == 27 ||  key == 'q' || key == 'Q')
         {
             //break;
-            Messages::Info("User has shutdown the application.");
+            Messages::Info("User has shutdown the application.\n");
             logWrite("User has shutdown the application.");
             capture.release();
             cv::destroyWindow("Face Detection");
