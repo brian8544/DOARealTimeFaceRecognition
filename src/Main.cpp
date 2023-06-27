@@ -249,16 +249,6 @@ int main(int argc, char** argv)
     // Create a VideoCapture object to capture video from webcam
     cv::VideoCapture capture(0);
 
-    // If the webcam is not opened, then exit
-    if (!capture.isOpened())
-    {
-        std::system("cls");
-        Messages::Error("Error opening camera.\n");
-        logWrite("Error opening camera.");
-        std::system("pause");
-        return -1;
-    }
-
     // Create the named window
     cv::namedWindow("Face Detection", cv::WINDOW_NORMAL);
 
