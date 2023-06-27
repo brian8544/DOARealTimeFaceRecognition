@@ -9,10 +9,10 @@ set "buildPath=F:\Repositories\RealTimeFaceRecognition\x64"
 set "vcpkgPath=F:\Repositories\vcpkg"
 
 :: Prepare library packages, if not exist.
+call %vcpkgPath%\bootstrap-vcpkg.bat
 %vcpkgPath%\vcpkg install curl
 %vcpkgPath%\vcpkg install opencv4
 %vcpkgPath%\vcpkg install dlib
-%vcpkgPath%\vcpkg bootstrap-vcpkg.bat
 %vcpkgPath%\vcpkg integrate install
 
 :: Remove existing build folder if it exists.
