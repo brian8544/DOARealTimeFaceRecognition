@@ -267,7 +267,7 @@ int main(int argc, char** argv)
     // Set initial size for the window
     cv::resizeWindow("Face Detection", 300, 300);
 
-    // Loop until the user presses ESC
+    // Loop until the user presses quits
     for (;;)
     {
         // Capture a frame from the webcam
@@ -289,8 +289,8 @@ int main(int argc, char** argv)
         // Wait for the user to press a key
         int key = cv::waitKey(1);
 
-        // If the user presses Q, then break from the loop
-        if (key == 27 ||  key == 'q' || key == 'Q')
+        // If the user presses defined buttons, then break from the loop
+        if (key == 27 ||  key == 'q')
         {
             //break;
             Messages::Info("User has shutdown the application.\n");
