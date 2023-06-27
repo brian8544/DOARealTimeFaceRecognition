@@ -3,12 +3,13 @@
 #include <fstream>
 #include <ctime>
 
-#include "Console/ConsoleOutput.cpp"
-
 // OpenCV 4
 #include <opencv2/objdetect.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+
+// Project includes
+#include "Console/ConsoleOutput.cpp"
 
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
