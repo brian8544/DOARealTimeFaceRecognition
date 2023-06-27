@@ -136,7 +136,7 @@ void logWrite(const std::string& message) {
 }
 
 // Function for face detection
-void detectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
+void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 {
     // Convert input image to grayscale
     cv::Mat gray;
@@ -278,7 +278,7 @@ int main(int argc, char** argv)
         }
 
         // Detect faces in the frame
-        detectAndDraw(frame, faceCascade, 1.1);
+        DetectAndDraw(frame, faceCascade, 1.1);
 
         // Display the frame
         cv::imshow("Face Detection", frame);
