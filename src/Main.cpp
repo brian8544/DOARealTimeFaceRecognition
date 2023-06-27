@@ -148,7 +148,6 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
     cascade.detectMultiScale(gray, faces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     // Iterate over the detected faces
-    //for (size_t i = 0; i < faces.size(); i++)
     for (const auto& faceROI : faces)
     {
         // Draw a rectangle around the face
@@ -162,6 +161,8 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         double maxVal = 0.0;  // Store the maximum match value
         std::string bestMatchName;  // Store the name of the best match
 
+        cv::Mat compareImg;
+
         for (const auto& entry : std::filesystem::directory_iterator(imageDir))
         {
             // Check if the file has a valid image extension
@@ -170,7 +171,7 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
                 continue; // Skip files with invalid extensions
             }
 
-            cv::Mat compareImg = cv::imread(entry.path().string());
+            compareImg = cv::imread(entry.path().string());
             if (compareImg.empty())
             {
                 Messages::Error("Failed to read image: " + entry.path().filename().string() + "\n");
@@ -188,7 +189,7 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
             cv::Mat result;
             try
             {
-                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCOEFF_NORMED);
+                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCORR_NORMED);
             }
             catch (const cv::Exception& e)
             {
@@ -199,16 +200,16 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 
             // Set a threshold for the match
             double threshold = 0.2;                             // 0.8 = default
-            double minVal;                                      //  double maxVal;
-            cv::Point minLoc;                                   //  cv::Point maxLoc;
-            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);   //  cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
+            double minVal;
+            cv::Point minLoc;
+            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);
 
             if (maxVal > threshold)
             {
                 // If a better match is found, update the best match information
                 bestMatchName = entry.path().filename().string();
             }
-            else if (maxVal > 0.1 && entry.path().filename().string() != bestMatchName)
+            else if (maxVal > 0.1)
             {
                 // Print other matches to the console
                 Messages::Info("Other match:  " + entry.path().filename().string() + "\n");
@@ -225,6 +226,7 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         }
     }
 }
+
 
 int main(int argc, char** argv)
 {
