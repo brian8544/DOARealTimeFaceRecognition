@@ -148,10 +148,10 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
     cascade.detectMultiScale(gray, faces, 1.1, 2, 0 | cv::CASCADE_SCALE_IMAGE, cv::Size(30, 30));
 
     // Iterate over the detected faces
-    for (size_t i = 0; i < faces.size(); i++)
+    //for (size_t i = 0; i < faces.size(); i++)
+    for (const auto& faceROI : faces)
     {
         // Draw a rectangle around the face
-        cv::Rect faceROI = faces[i];
         cv::rectangle(img, faceROI, cv::Scalar(255, 0, 0), 2);
         Messages::Info("Face recognized, but no match.\n");
         logWrite("Face recognized, but no match.");
