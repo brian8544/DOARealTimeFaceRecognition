@@ -10,6 +10,10 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+// Dlib 
+#include <dlib/opencv.h>
+#include <dlib/image_processing.h>
+
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
 std::string LOGGING_DIR;
