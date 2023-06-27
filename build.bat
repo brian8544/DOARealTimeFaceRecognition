@@ -4,14 +4,16 @@ cls
 setlocal enabledelayedexpansion
 
 set "msbuildPath=C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
-set "solutionPath=D:\Repositories\RealTimeFaceRecognition-PRIVATE\RealtimeFacialRecognition.sln"
-set "buildPath=D:\Repositories\RealTimeFaceRecognition-PRIVATE\x64"
-set "vcpkgPath=D:\Repositories\vcpkg"
+set "solutionPath=F:\Repositories\RealTimeFaceRecognition\RealtimeFacialRecognition.sln"
+set "buildPath=F:\Repositories\RealTimeFaceRecognition\x64"
+set "vcpkgPath=F:\Repositories\vcpkg"
 
 :: Prepare library packages, if not exist.
 %vcpkgPath%\vcpkg install curl
 %vcpkgPath%\vcpkg install opencv4
 %vcpkgPath%\vcpkg install dlib
+%vcpkgPath%\vcpkg bootstrap-vcpkg.bat
+%vcpkgPath%\vcpkg integrate install
 
 :: Remove existing build folder if it exists.
 IF EXIST "%buildPath%" (
