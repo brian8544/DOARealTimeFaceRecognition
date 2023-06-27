@@ -3,6 +3,7 @@
 #include <fstream>
 #include <ctime>
 #include <thread>
+#include <atomic>
 
 // OpenCV 4
 #include <opencv2/objdetect.hpp>
