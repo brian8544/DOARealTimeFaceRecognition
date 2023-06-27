@@ -19,12 +19,16 @@ std::string IMAGE_DIR;
 std::string LOGGING_DIR;
 
 void Initialize() {
-
     if (std::filesystem::is_directory(LOGGING_DIR)) {
         Messages::Info("Logging directory exists. Continuing.\n");
     }
     else {
         std::filesystem::create_directory(LOGGING_DIR);
+        if (!std::filesystem::is_directory(LOGGING_DIR)) {
+            Messages::Error("Failed to create logging directory.\n");
+            system("pause");
+            exit(1);
+        }
         Messages::Notice("Logging directory does not exist. It has been created. First launch?\n");
     }
 
@@ -33,19 +37,25 @@ void Initialize() {
     }
     else {
         std::filesystem::create_directory(IMAGE_DIR);
+        if (!std::filesystem::is_directory(IMAGE_DIR)) {
+            Messages::Error("Failed to create image directory.\n");
+            system("pause");
+            exit(1);
+        }
         Messages::Notice("Image directory does not exist. It has been created. First launch?\n");
     }
 
-    if (!std::filesystem::exists(LOGGING_DIR + "/system.log")) {
-        std::ofstream logFile(LOGGING_DIR + "/system.log");
-        if (!logFile) {
-            Messages::Error("Log file could not be created. Check file permissions?\n");
-        }
-        logFile.close();
-        Messages::Notice("Log file created successfully. First launch?\n");
+    if (std::filesystem::exists(LOGGING_DIR + "/system.log")) {
+        Messages::Info("Log file exists. Appending.\n");
     }
     else {
-        Messages::Info("Log file exists, appending.\n");
+        std::ofstream logFile(LOGGING_DIR + "/system.log");
+        if (!logFile.is_open()) {
+            Messages::Error("Failed to open log file.\n");
+            system("pause");
+            exit(1);
+        }
+        Messages::Notice("Log file created successfully. First launch?\n");
     }
 }
 
@@ -97,8 +107,7 @@ void readSettings()
         }
         settingsFile.close();
     }
-    else
-    {
+    else {
         Messages::Info("Failed to open settings.conf file.\n");
         system("pause");
         exit(1);  // Use exit(1) to indicate an error
