@@ -18,6 +18,7 @@ std::string IMAGE_DIR;
 std::string LOGGING_DIR;
 
 void Initialize() {
+    // Check if the logging directory exists
     if (std::filesystem::is_directory(LOGGING_DIR)) {
         Messages::Info("Logging directory exists. Continuing.\n");
     }
@@ -31,6 +32,7 @@ void Initialize() {
         Messages::Notice("Logging directory does not exist. It has been created. First launch?\n");
     }
 
+    // Check if the image directory exists
     if (std::filesystem::is_directory(IMAGE_DIR)) {
         Messages::Info("Image directory exists. Continuing.\n");
     }
@@ -44,6 +46,7 @@ void Initialize() {
         Messages::Notice("Image directory does not exist. It has been created. First launch?\n");
     }
 
+    // Check if the log file exists
     if (std::filesystem::exists(LOGGING_DIR + "/system.log")) {
         Messages::Info("Log file exists. Appending.\n");
     }
@@ -294,11 +297,11 @@ int main()
         }
     }
 
-    // Close the VideoCapture object
+    // Release the VideoCapture object
     capture.release();
 
     // Destroy the window
-    cv::destroyWindow("Face Detection");
+    cv::destroyAllWindows();
 
     return 0;
 }
