@@ -224,7 +224,6 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
         {
             // If a match is found, draw an orange box with the best match filename as a label
             cv::rectangle(img, faceROI, cv::Scalar(0, 165, 255), 2);
-            Messages::Info("Match found. See window.\n");
             cv::putText(img, bestMatchName, cv::Point(faceROI.x, faceROI.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
         }
     }
