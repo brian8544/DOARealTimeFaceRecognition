@@ -62,7 +62,7 @@ void Initialize() {
 bool hasValidImageExtension(const std::filesystem::path& path) {
     std::string extension = path.extension().string();
     // List of valid image extensions (add more if needed)
-    std::vector<std::string> validExtensions = { ".jpg", ".jpeg", ".png", ".bmp" };
+    std::vector<std::string> validExtensions = { ".jpg", ".jpeg", ".png" };
     for (const auto& validExtension : validExtensions) {
         if (extension == validExtension) {
             return true;
@@ -228,7 +228,7 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 }
 
 
-int main(int argc, char** argv)
+int main()
 {
     readSettings();
 
@@ -257,32 +257,34 @@ int main(int argc, char** argv)
     // Set initial size for the window
     cv::resizeWindow("Face Detection", 300, 300);
 
-    // Loop until the user presses quits
-    for (;;)
+    cv::Mat frame;
+    while (capture.read(frame))
     {
-        // Capture a frame from the webcam
-        cv::Mat frame;
-        capture >> frame;
-
-        // If the frame is empty, then break from the loop
         if (frame.empty())
         {
-            break;
+            std::system("cls");
+            Messages::Error("Frame error.");
+            logWrite("Frame error.");
+            std::system("pause");
+            return -1;
         }
 
-        // Detect faces in the frame
+        if (!capture.isOpened())
+        {
+            std::system("cls");
+            Messages::Error("Error opening camera.");
+            logWrite("Error opening camera.");
+            std::system("pause");
+            return -1;
+        }
+
         DetectAndDraw(frame, faceCascade, 1.1);
 
-        // Display the frame
         cv::imshow("Face Detection", frame);
 
-        // Wait for the user to press a key
         int key = cv::waitKey(1);
-
-        // If the user presses defined buttons, then break from the loop
-        if (key == 27 ||  key == 'q')
+        if (key == 27 || key == 'q')
         {
-            //break;
             Messages::Info("User has shutdown the application.\n");
             logWrite("User has shutdown the application.");
             capture.release();
