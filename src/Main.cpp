@@ -229,7 +229,6 @@ void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
     }
 }
 
-
 int main()
 {
     readSettings();
