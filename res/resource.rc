@@ -1,0 +1,2 @@
+#define ICON_APP 101
+ICON_APP ICON "icon.ico"
