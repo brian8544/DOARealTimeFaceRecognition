@@ -2,6 +2,8 @@
 
 #include "../PCH.h"
 
+namespace Utilities {
+
 std::string CASCADE_FILE_MAIN;
 std::string IMAGE_DIR;
 std::string LOGGING_DIR;
@@ -14,7 +16,6 @@ void Initialize() {
         std::filesystem::create_directory(LOGGING_DIR);
         if (!std::filesystem::is_directory(LOGGING_DIR)) {
             qDebug() << "Failed to create logging directory.";
-            system("pause");
             exit(1);
         }
         qDebug() << "Logging directory does not exist. It has been created. First launch?";
@@ -27,7 +28,6 @@ void Initialize() {
         std::filesystem::create_directory(IMAGE_DIR);
         if (!std::filesystem::is_directory(IMAGE_DIR)) {
             qDebug() << "Failed to create image directory.";
-            system("pause");
             exit(1);
         }
         qDebug() << "Image directory does not exist. It has been created. First launch?";
@@ -40,7 +40,6 @@ void Initialize() {
         std::ofstream logFile(LOGGING_DIR + "/system.log");
         if (!logFile.is_open()) {
             qDebug() << "Failed to open log file.";
-            system("pause");
             exit(1);
         }
         qDebug() << "Log file created successfully. First launch?";
@@ -48,7 +47,7 @@ void Initialize() {
 }
 
 // Function to check if a file has a valid image extension
-bool hasValidImageExtension(const std::filesystem::path& path) {
+bool HasValidImageExtension(const std::filesystem::path& path) {
     std::string extension = path.extension().string();
     // List of valid image extensions (add more if needed)
     std::vector<std::string> validExtensions = { ".jpg", ".jpeg", ".png" };
@@ -60,10 +59,10 @@ bool hasValidImageExtension(const std::filesystem::path& path) {
     return false;
 }
 
-void readSettings() {
+void ReadSettings() {
     // Since running debug mode in Visual Studio loads the executable at the root "/", we have to hardlink the conf file, otherwise it will throw a missing file error.
 #ifdef QT_DEBUG
-    std::ifstream settingsFile("src/settings-dev.conf");
+    std::ifstream settingsFile("F:/Repositories/RealTimeFaceRecognition/src/settings-dev.conf");
 #else
     std::ifstream settingsFile("settings.conf");
 #endif
@@ -73,7 +72,6 @@ void readSettings() {
         {
             qDebug() << "settings.conf is empty or corrupt.";
             settingsFile.close();
-            system("pause");
             exit(1);  // Use exit(1) to indicate an error
         }
         std::string line;
@@ -95,13 +93,12 @@ void readSettings() {
         settingsFile.close();
     }
     else {
-        Messages::Info("Failed to open settings.conf file.\n");
-        system("pause");
+        qDebug() << "Failed to open settings.conf file.";
         exit(1);  // Use exit(1) to indicate an error
     }
 }
 
-std::string getCurrentTime() {
+std::string GetCurrentTime() {
     time_t now = time(0);
     struct tm timeInfo;
     localtime_s(&timeInfo, &now);
@@ -110,17 +107,16 @@ std::string getCurrentTime() {
     return buffer;
 }
 
-void logWrite(const std::string& message) {
+void LogWrite(const std::string& message) {
     std::ofstream logFile(LOGGING_DIR + "/system.log", std::ios::app);
     if (logFile.is_open()) {
-        logFile << getCurrentTime() << " "; // Add current time before the log message
+        logFile << GetCurrentTime() << " "; // Add current time before the log message
         logFile << message << std::endl;
         logFile.close();
-        //std::cout << "Message logged successfully." << std::endl;
     }
     else {
         qDebug() << "Unable to open log file.";
-        system("pause");
         exit(1);  // Use exit(1) to indicate an error
     }
+}
 }

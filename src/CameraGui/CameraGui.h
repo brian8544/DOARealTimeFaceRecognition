@@ -15,6 +15,8 @@ public:
     RealTimeFacialRecognition(QWidget *parent = nullptr);
     ~RealTimeFacialRecognition();
 
+    void DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale);
+
 private slots:
     void updateCameraFeed(); // Declare the updateCameraFeed slot
 
