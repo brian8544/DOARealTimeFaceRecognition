@@ -1,4 +1,6 @@
-#include "PCH.h"
+#pragma once
+
+#include "../PCH.h"
 #include "CameraGui.h"
 #include "ui_CameraGui.h" // Include the ui_CameraGui.h header
 

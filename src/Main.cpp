@@ -1,6 +1,6 @@
-#include "CameraGui.h"
-
-#include <QApplication>
+#pragma once
+#include "PCH.h"
+#include "CameraGui/CameraGui.h"
 
 int main(int argc, char *argv[])
 {

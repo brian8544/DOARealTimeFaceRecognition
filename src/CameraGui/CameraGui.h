@@ -1,7 +1,7 @@
 #ifndef CAMERAGUI_H
 #define CAMERAGUI_H
 
-#include "PCH.h"
+#include "../PCH.h"
 
 namespace Ui {
 class RealTimeFacialRecognition;

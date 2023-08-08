@@ -27,9 +27,9 @@ set(PROJECT_SOURCES
         src/PCH.h
         src/Main.cpp
 
-        src/CameraGui.cpp
-        src/CameraGui.h
-        src/CameraGui.ui
+        src/CameraGui/CameraGui.cpp
+        src/CameraGui/CameraGui.h
+        src/CameraGui/CameraGui.ui
 
         res/qt-resource.qrc
 )
