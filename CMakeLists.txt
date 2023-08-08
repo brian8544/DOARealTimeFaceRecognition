@@ -5,7 +5,7 @@ set(CMAKE_TOOLCHAIN_FILE "F:/repositories/vcpkg/scripts/buildsystems/vcpkg.cmake
 set(VCPKG_PATH "F:/Repositories/vcpkg")
 set(CMAKE_PREFIX_PATH "C:/Qt/6.5.2/msvc2019_64" ${CMAKE_PREFIX_PATH})
 
-project(RealTimeFacialRecognition VERSION 0.1 LANGUAGES CXX)
+project(RealTimeFaceRecognition VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -19,10 +19,9 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 # --- Packages | Don't forget to manually copy DLL files! ---
 
-# Curl:
-set(CURL_INCLUDE_DIRS "${VCPKG_PATH}/installed/include")
-set(CURL_LIBRARIES "${VCPKG_PATH}/installed/lib/libcurl.lib")
-find_package(CURL REQUIRED)
+# OpenCV:
+set(OpenCV_DIR "${VCPKG_PATH}/installed/x64-windows/share/opencv")
+find_package(OpenCV REQUIRED)
 
 set(PROJECT_SOURCES
         src/PCH.h
@@ -36,31 +35,31 @@ set(PROJECT_SOURCES
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(BrianApp
+    qt_add_executable(RealTimeFaceRecognition
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ${CMAKE_SOURCE_DIR}/res/resource.rc
     )
 endif()
 
-target_link_libraries(BrianApp
+target_link_libraries(RealTimeFaceRecognition
     PRIVATE
     Qt${QT_VERSION_MAJOR}::Widgets
-    CURL::libcurl
+    ${OpenCV_LIBS}
 )
 
 message(STATUS "Don't forget to run QT Creator as an administrator!")
-set_target_properties(BrianApp PROPERTIES
+set_target_properties(RealTimeFaceRecognition PROPERTIES
     WIN32_EXECUTABLE TRUE
     #LINK_FLAGS "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\""
 )
 
-install(TARGETS BrianApp
+install(TARGETS RealTimeFaceRecognition
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_finalize_executable(BrianApp)
+    qt_finalize_executable(RealTimeFaceRecognition)
 endif()

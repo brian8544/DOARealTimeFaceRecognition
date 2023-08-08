@@ -1,24 +1,24 @@
 @echo off
-taskkill /F /IM BrianApp.exe
+taskkill /F /IM RealTimeFacialRecognition.exe
 cls
 setlocal
 
 :: Set the variables
 set "QT_DIR=C:\Qt\6.5.2\msvc2019_64"
-set "THEMIDA_DIR=D:\iCloudDrive\Games & Apps\Utilities\Themida\"
 set "CMAKE_DIR=C:\Program Files\CMake\bin"
 set "VCPKG_DIR=F:\Repositories\vcpkg"
-set "PROJECT_DIR=F:\Repositories\BrianApp"
+set "PROJECT_DIR=F:\Repositories\RealTimeFaceRecognition"
 set "BUILD_DIR=%PROJECT_DIR%\build"
-set "APP_EXE_PATH=%BUILD_DIR%\release\BrianApp.exe"
+set "APP_EXE_PATH=%BUILD_DIR%\release\RealTimeFaceRecognition.exe"
 set "DEPLOY_DIR=%BUILD_DIR%\Deploy"
-set "UPLOAD_DIR=\\10.10.10.10\disk\Websites\www\cdn.brianoost.com\files\brianapp"
 
 echo === Fetching Required Packages ===
 
 :: Prepare library packages, if not exist.
 call %VCPKG_DIR%\bootstrap-vcpkg.bat
 %VCPKG_DIR%\vcpkg install curl
+%vcpkgPath%\vcpkg install opencv4
+%vcpkgPath%\vcpkg install dlib
 %VCPKG_DIR%\vcpkg integrate install
 
 echo === Starting Build and Deployment ===
@@ -63,45 +63,19 @@ copy /Y "%APP_EXE_PATH%" "%DEPLOY_DIR%"
 
 :: Run windeployqt to deploy required Qt libraries and plugins
 echo Deploying Qt libraries and plugins...
-"%QT_DIR%\bin\windeployqt.exe" --release --no-translations --dir "%DEPLOY_DIR%" "%DEPLOY_DIR%\BrianApp.exe"
+"%QT_DIR%\bin\windeployqt.exe" --release --no-translations --dir "%DEPLOY_DIR%" "%DEPLOY_DIR%\RealTimeFaceRecognition.exe"
 
 :: Third-party DLL's.
 echo Copying third-party DLLs...
-copy /Y "%PROJECT_DIR%\dep\MySQL\Connector C++ 8.0\lib64\mysqlcppconn-9-vs14.dll" "%DEPLOY_DIR%"
-copy /Y "%PROJECT_DIR%\dep\MySQL\Connector C++ 8.0\lib64\libcrypto-3-x64.dll" "%DEPLOY_DIR%"
-copy /Y "%PROJECT_DIR%\dep\MySQL\Connector C++ 8.0\lib64\libssl-3-x64.dll" "%DEPLOY_DIR%"
-copy /Y "%VCPKG_DIR%\packages\curl_x64-windows\bin\*" "%DEPLOY_DIR%"
-copy /Y "%VCPKG_DIR%\packages\zlib_x64-windows\bin\zlib1.dll" "%DEPLOY_DIR%"
+copy /Y "%VCPKG_DIR%\installed\x64-windows\bin\*.dll" "%DEPLOY_DIR%"
 
 :: Manual labor:
 echo Copying custom files...
-copy /Y "%PROJECT_DIR%\dep\patcher\patcher.cmd" "%DEPLOY_DIR%"
-
-:: Obfuscation
-cd /d "%THEMIDA_DIR%"
-themida64.exe /protect F:\Repositories\BrianApp\contrib\obfuscation\themida.tmd
-cd /d "%DEPLOY_DIR%"
-del /s /q "BrianApp.exe"
-ren "BrianApp_protected.exe" "BrianApp.exe"
 
 :: Cleanup
 echo Cleaning up...
-rmdir /s /q "%DEPLOY_DIR%\tls"
-rmdir /s /q "%DEPLOY_DIR%\networkinformation"
-rmdir /s /q "%DEPLOY_DIR%\imageformats"
-rmdir /s /q "%DEPLOY_DIR%\iconengines"
-rmdir /s /q "%DEPLOY_DIR%\generic"
-del /s /q "%DEPLOY_DIR%\D3Dcompiler_47.dll"
-del /s /q "%DEPLOY_DIR%\opengl32sw.dll"
-del /s /q "%DEPLOY_DIR%\Qt6Pdf.dll"
-del /s /q "%DEPLOY_DIR%\Qt6Svg.dll"
-del /s /q "%DEPLOY_DIR%\Qt6Network.dll"
-del /s /q "%DEPLOY_DIR%\*.pdb"
 
 echo Deployment completed.
-
-echo Sending to CDN...
-powershell Compress-Archive -Path %DEPLOY_DIR%/* -DestinationPath %UPLOAD_DIR%\BrianApp-latest.zip -Force
 
 echo === Build and Deployment process completed successfully ===
 pause
