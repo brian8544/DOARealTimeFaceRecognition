@@ -1,9 +1,7 @@
 #pragma once
 #include "../PCH.h"
-
-#include "CameraGui.h"
-#include "ui_CameraGui.h"
-
+#include "RealTimeFacialRecognition.h"
+#include "ui_RealTimeFacialRecognition.h"
 #include "../Utilities/Utilities.h"
 
 RealTimeFacialRecognition::RealTimeFacialRecognition(QWidget *parent)
@@ -30,7 +28,7 @@ RealTimeFacialRecognition::RealTimeFacialRecognition(QWidget *parent)
     }
 
     // Get a reference to the QGraphicsView widget named "CameraFeed" from the UI
-    QGraphicsView* graphicsView = ui->CameraFeed; // Assuming CameraFeed is the QGraphicsView
+    QGraphicsView* graphicsView = ui->CameraFeed;
 
     // Set up the QGraphicsScene if not already set up
     if (!graphicsView->scene())
@@ -45,7 +43,6 @@ RealTimeFacialRecognition::RealTimeFacialRecognition(QWidget *parent)
     timer->start(30); // Update every 30 milliseconds
 }
 
-// Function for face detection
 void RealTimeFacialRecognition::DetectAndDraw(cv::Mat& img, cv::CascadeClassifier& cascade, double scale)
 {
     // Convert input image to grayscale
@@ -69,8 +66,6 @@ void RealTimeFacialRecognition::DetectAndDraw(cv::Mat& img, cv::CascadeClassifie
         double maxVal = 0.0;  // Store the maximum match value
         std::string bestMatchName;  // Store the name of the best match
 
-        cv::Mat compareImg;
-
         for (const auto& entry : std::filesystem::directory_iterator(imageDir))
         {
             // Check if the file has a valid image extension
@@ -79,46 +74,29 @@ void RealTimeFacialRecognition::DetectAndDraw(cv::Mat& img, cv::CascadeClassifie
                 continue; // Skip files with invalid extensions
             }
 
-            compareImg = cv::imread(entry.path().string());
+            cv::Mat compareImg = cv::imread(entry.path().string(), cv::IMREAD_GRAYSCALE);
             if (compareImg.empty())
             {
                 qDebug() << "Failed to read image:" << entry.path().filename().string();
                 continue; // Skip to the next image
             }
 
-            // Convert the compare image to grayscale
-            cv::cvtColor(compareImg, compareImg, cv::COLOR_BGR2GRAY);
-
             // Resize the compare image to match the size of the detected face
-            cv::resize(compareImg, compareImg, faceROI.size());
+            cv::Mat resizedCompareImg;
+            cv::resize(compareImg, resizedCompareImg, faceROI.size());
 
             // Perform template matching to find the match
             cv::Mat result;
-            try
-            {
-                cv::matchTemplate(compareImg, gray(faceROI), result, cv::TM_CCORR_NORMED);
-            }
-            catch (const cv::Exception& e)
-            {
-                qDebug() << "Error occurred during template matching:" << e.what();
-                continue; // Skip to the next image
-            }
+            cv::matchTemplate(resizedCompareImg, gray(faceROI), result, cv::TM_CCORR_NORMED);
 
-            // Set a threshold for the match
-            double threshold = 0.2;                             // 0.8 = default
-            double minVal;
-            cv::Point minLoc;
-            cv::minMaxLoc(result, &minVal, &maxVal, &minLoc);
+            // Find the location of the best match
+            cv::Point minLoc, maxLoc;
+            cv::minMaxLoc(result, nullptr, &maxVal, nullptr, &maxLoc);
 
-            if (maxVal > threshold)
+            if (maxVal > 0.2)  // Adjust the threshold as needed
             {
-                // If a better match is found, update the best match information
+                // Update the best match information
                 bestMatchName = entry.path().filename().string();
-            }
-            else if (maxVal > 0.1)
-            {
-                // Print other matches to the console
-                qDebug() << "Other match:" << entry.path().filename().string();
             }
         }
 
@@ -131,7 +109,6 @@ void RealTimeFacialRecognition::DetectAndDraw(cv::Mat& img, cv::CascadeClassifie
     }
 }
 
-
 void RealTimeFacialRecognition::updateCameraFeed()
 {
     cv::Mat frame;
@@ -139,54 +116,45 @@ void RealTimeFacialRecognition::updateCameraFeed()
     // Capture a frame from the camera
     camera >> frame;
 
-    if (!frame.empty())
+    if (frame.empty())
     {
-        // Calculate the target size based on QGraphicsView dimensions
-        QSize targetSize = ui->CameraFeed->viewport()->size();
-
-        // Resize the OpenCV frame to match the target size
-        cv::Mat resizedFrame;
-        cv::resize(frame, resizedFrame, cv::Size(targetSize.width(), targetSize.height()));
-
-        // Convert the resized OpenCV Mat to Qt QImage
-        QImage qImage(resizedFrame.data, resizedFrame.cols, resizedFrame.rows, resizedFrame.step, QImage::Format_RGB888);
-
-        // Convert QImage to QPixmap
-        QPixmap pixmap = QPixmap::fromImage(qImage.rgbSwapped());
-
-        // Get the QGraphicsView widget named "CameraFeed" from the UI
-        QGraphicsView* graphicsView = ui->CameraFeed;
-
-        // Set the new pixmap in the QGraphicsScene
-        QGraphicsScene* cameraFeed = graphicsView->scene();
-        cameraFeed->clear();
-        cameraFeed->addPixmap(pixmap);
-
-        // Perform face detection using CascadeClassifier
-        cv::CascadeClassifier faceCascade(Utilities::CASCADE_FILE_MAIN);
-        std::vector<cv::Rect> faces;
-        cv::Mat grayFrame;
-        cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
-        faceCascade.detectMultiScale(grayFrame, faces, 1.1, 4);
-
-        // Draw rectangles around detected faces and perform recognition
-        for (const cv::Rect& faceRect : faces)
-        {
-            cv::rectangle(resizedFrame, faceRect, cv::Scalar(255, 0, 0), 2);
-
-            // Convert the detected face region to grayscale
-            cv::Mat detectedFace = grayFrame(faceRect);
-
-            // Perform recognition using the existing function from OldScript
-            RealTimeFacialRecognition::DetectAndDraw(detectedFace, faceCascade, 1.1);
-
-            // Draw the processed frame with rectangles and recognition results
-            qImage = QImage(resizedFrame.data, resizedFrame.cols, resizedFrame.rows, resizedFrame.step, QImage::Format_RGB888);
-            pixmap = QPixmap::fromImage(qImage.rgbSwapped());
-            cameraFeed->clear();
-            cameraFeed->addPixmap(pixmap);
-        }
+        qDebug() << "Error: Could not capture a frame from the camera.";
+        return;
     }
+
+    // Convert the captured frame to grayscale
+    cv::Mat grayFrame;
+    cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
+
+    // Perform face detection using CascadeClassifier
+    cv::CascadeClassifier faceCascade(Utilities::CASCADE_FILE_MAIN);
+    std::vector<cv::Rect> faces;
+    faceCascade.detectMultiScale(grayFrame, faces, 1.1, 4);
+
+    // Draw rectangles around detected faces and perform recognition
+    for (const cv::Rect& faceRect : faces)
+    {
+        // Draw a rectangle around the detected face
+        cv::rectangle(frame, faceRect, cv::Scalar(255, 0, 0), 2);
+
+        // Extract the detected face region
+        cv::Mat detectedFace = grayFrame(faceRect).clone();
+
+        // Perform recognition using the DetectAndDraw function
+        RealTimeFacialRecognition::DetectAndDraw(detectedFace, faceCascade, 1.1);
+
+        // Draw the processed frame with rectangles and recognition results
+        cv::rectangle(frame, faceRect, cv::Scalar(0, 165, 255), 2);
+        cv::putText(frame, "Recognized", cv::Point(faceRect.x, faceRect.y - 10), cv::FONT_HERSHEY_SIMPLEX, 0.9, cv::Scalar(0, 165, 255), 2);
+    }
+
+    // Display the frame with detected faces
+    QImage qImage(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+    QPixmap pixmap = QPixmap::fromImage(qImage.rgbSwapped());
+    QGraphicsView* graphicsView = ui->CameraFeed;
+    QGraphicsScene* cameraFeed = graphicsView->scene();
+    cameraFeed->clear();
+    cameraFeed->addPixmap(pixmap);
 }
 
 RealTimeFacialRecognition::~RealTimeFacialRecognition()
