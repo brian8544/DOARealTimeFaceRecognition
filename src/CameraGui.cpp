@@ -40,8 +40,15 @@ void RealTimeFacialRecognition::updateCameraFeed()
 
     if (!frame.empty())
     {
-        // Convert OpenCV Mat to Qt QImage
-        QImage qImage(frame.data, frame.cols, frame.rows, frame.step, QImage::Format_RGB888);
+        // Calculate the target size based on QGraphicsView dimensions
+        QSize targetSize = ui->CameraFeed->viewport()->size();
+
+        // Resize the OpenCV frame to match the target size
+        cv::Mat resizedFrame;
+        cv::resize(frame, resizedFrame, cv::Size(targetSize.width(), targetSize.height()));
+
+        // Convert the resized OpenCV Mat to Qt QImage
+        QImage qImage(resizedFrame.data, resizedFrame.cols, resizedFrame.rows, resizedFrame.step, QImage::Format_RGB888);
 
         // Convert QImage to QPixmap
         QPixmap pixmap = QPixmap::fromImage(qImage.rgbSwapped());
