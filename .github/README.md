@@ -1,4 +1,4 @@
-# Real-Time Facial Recognition
+# Real-Time Facial Recognition -- failure, to be removed soon
 
 This script detects faces in real-time using the OpenCV library. It captures frames from a camera/webcam and applies face detection algorithms to identify faces in the frames. It also compares the detected faces with a set of reference images to find potential matches.
 
